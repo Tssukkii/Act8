@@ -1,0 +1,46 @@
+---
+
+- name: Update package cache for Ubuntu
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Update package cache for CentOS
+  yum:
+    name: '*'
+    state: latest
+  when: ansible_os_family == "RedHat"
+
+
+- name: Install Nagios on Ubuntu
+  apt:
+    name: nagios4
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Enable EPEL repository on CentOS
+  yum:
+    name: epel-release
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Install Nagios on CentOS
+  yum:
+    name: nagios
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Ensure Nagios is started and enabled(Ubuntu)
+  service:
+    name: nagios4
+    state: started
+    enabled: true
+  when: ansible_os_family in  ["Debian"]
+
+- name: Ensure Nagios is started and enabled(CentOS)
+  service:
+    name: nagios
+    state: started
+    enabled: true
+  when: ansible_os_family in ["RedHat"]
+
